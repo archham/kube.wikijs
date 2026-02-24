@@ -1,0 +1,79 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wikijs
+  namespace: __NS__
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wikijs
+  template:
+    metadata:
+      labels:
+        app: wikijs
+    spec:
+      containers:
+      - name: wikijs
+        image: ghcr.io/requarks/wiki:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DB_TYPE
+          value: "postgres"
+        - name: DB_HOST
+          value: "postgresql"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: postgresql-secret
+              key: db_pass
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: postgresql-secret
+              key: db_name
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgresql-secret
+              key: db_user
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wikijs
+  namespace: __NS__
+spec:
+  selector:
+    app: wikijs
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wikijs
+  namespace: __NS__
+spec:
+  rules:
+  - host: __FQDN__
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: wikijs
+            port:
+              number: 80
+
