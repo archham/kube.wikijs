@@ -2,14 +2,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: wikijs
-  namespace: wiki
+  namespace: __NS__
   annotations:
     kubernetes.io/ingress.class: traefik
 spec:
   ingressClassName: traefik
 
   rules:
-  - host: wiki.bitbull.ch
+  - host: __FQDN__
     http:
       paths:
       - path: /sitemap.xml
