@@ -25,6 +25,9 @@ sed "s/__NS__/$NS/" wikijs.yml | sed "s/__FQDN__/$FQDN/" | kubectl apply -f -
 ```
 
 # Install sitemap generator and ingress
+This is optional and on top of wiki setup.   
+Problem is around by design and for ages, this is my simple workaround by not disturbing original setup.
+
 ```bash
 sed "s/__NS__/$NS/" wikijs_sitemap.yml | sed "s/__FQDN__/$FQDN/" | kubectl apply -f -
 sed "s/__NS__/$NS/" wikijs_sitemap_ingress.yml | sed "s/__FQDN__/$FQDN/" | kubectl apply -f -
